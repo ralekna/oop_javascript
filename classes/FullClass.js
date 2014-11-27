@@ -1,4 +1,4 @@
-var SomeClass = (function() {
+var FullClass = (function() {
   
   ///
   /// STATIC MEMBERS
@@ -9,25 +9,28 @@ var SomeClass = (function() {
   var privateStaticVariable = "I\'m private static!";
   
   // Public static class methods
-  SomeClass.getPrivateStaticVariable = function() {
+  FullClass.getPrivateStaticVariable = function() {
     return privateStaticVariable;
   };
   
   // Public static variables
   // Have in mind that these variables can be easily changed by accident.
-  SomeClass.publicStaticVar = "I\'m static and public!";
+  FullClass.publicStaticVar = "I\'m static and public!";
   
   // It is used to declare constants in this scope
-  SomeClass.DEFAULTS_CONSTANT = "This is a default value";
+  FullClass.DEFAULTS_CONSTANT = "This is a default value";
   
   // Private static methods
   // These methods are good for various utility functions
   var privateStaticMethod = function() {
     // it can access both private and public static variables and methods
+
   };
   
   // class constructor
-  function SomeClass(someArgument) {
+  // It is recommended to declare constructor as function instead of closure ( var FullClass = function() {}; )
+  // because it is declared immediately in it's scope before all other declarations
+  function FullClass(someArgument) {
     
     // private instance variables
     // use them only when you realy need them because they don't go 
@@ -52,7 +55,7 @@ var SomeClass = (function() {
   }  
   
   // in prototype you define or override public instance variables and methods that will common to all instances of class
-  SomeClass.prototype = {
+  FullClass.prototype = {
     
     // public instace variable
     // Variables declared here is also accessible in constructor.
@@ -62,7 +65,7 @@ var SomeClass = (function() {
     publicInstanceVariable: null,
     
     // You can set instance variables' values to static vars' values 
-    anotherInstanceVariable: SomeClass.DEFAULTS_CONSTANT,
+    anotherInstanceVariable: FullClass.DEFAULTS_CONSTANT,
     thirdInstanceVariable: privateStaticVariable,
     
     // in prototype you can access private instance variables only via getters and setters
@@ -93,6 +96,6 @@ var SomeClass = (function() {
   };
   
   // It is important to return Class constructor's closure
-  return SomeClass;
+  return FullClass;
 
 })();
