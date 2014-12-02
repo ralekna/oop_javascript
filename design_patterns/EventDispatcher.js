@@ -70,3 +70,17 @@ var EventDispatcher = (function() {
   return EventDispatcher;
 
 })();
+
+
+
+// examples
+
+var SomeClass = (function() {
+
+  function SomeClass () {
+
+  }
+
+  return SomeClass;
+
+})();
