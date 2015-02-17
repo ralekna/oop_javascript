@@ -40,7 +40,7 @@ var OtherExampleClass = (function() {
 // most straightforward method to create class instance
 var exampleClassInstance = new ExampleClass();
 
-// it is possible to create instance without braces, but recommended for readability
+// it is possible to create instance without braces, but not recommended for readability
 var exampleClassInstance2 = new ExampleClass;
 
 // THIS WONT WORK!!!
