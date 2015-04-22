@@ -16,7 +16,11 @@ Definitions, *platonic* ideas and blueprints of things, people, actions and othe
 
 ## Plain classes
 
-### The simplest class
+In JavaScript till ES6 there is no such native thing as classes. This situation makes OOP in JavaScript complicated but that's why I created this slide show for you.
+
+### Functions
+
+Let's talk about functions first
 ```javascript
 function SomeClass(prop) {
   // this function body is constructor
