@@ -1,4 +1,4 @@
-var FullClass = (function() {
+module.export = (function() {
   
   ///
   /// STATIC MEMBERS
