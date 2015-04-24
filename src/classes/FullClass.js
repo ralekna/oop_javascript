@@ -1,4 +1,4 @@
-module.export = (function() {
+define('classes/FullClass', function() {
   
   ///
   /// STATIC MEMBERS
@@ -24,7 +24,6 @@ module.export = (function() {
   // These methods are good for various utility functions
   var privateStaticMethod = function() {
     // it can access both private and public static variables and methods
-
   };
   
   // class constructor
@@ -98,4 +97,4 @@ module.export = (function() {
   // It is important to return Class constructor's closure
   return FullClass;
 
-})();
+});

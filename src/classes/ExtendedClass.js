@@ -1,35 +1,10 @@
-var BaseClass  = (function() {
+define('classes/ExtendedClass', ['classes/BaseClass'], function(BaseClass) {
 
-  function BaseClass () {
-    console.log('in constructor', this);
-    if (this == window) {
-      return new BaseClass();
-    }
+  function ExtendedClass () {
   }
 
-  BaseClass.prototype = {
-    doSomething: function () {
-      console.log('hey');
-    }
-  };
-
-  return BaseClass;
-
-})();
-/**
- * Created by rytis on 2014-12-05.
- */
-var ExtendedClass = (function() {
-
-  function ExtendedClass() {
-
-  }
-
-  ExtendedClass.prototype = {
-
-  };
+  ExtendedClass.prototype = new BaseClass();
 
   return ExtendedClass;
 
-})();
-
+});
