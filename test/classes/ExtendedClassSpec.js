@@ -3,15 +3,11 @@ define(function () {
   var BaseClass = (function() {
 
     function BaseClass () {
-      console.log('in constructor', this);
-      if (this == window) {
-        return new BaseClass();
-      }
+      this.doSomething();
     }
 
     BaseClass.prototype = {
       doSomething: function () {
-        console.log('hey');
       }
     };
 
@@ -42,12 +38,23 @@ define(function () {
       expect((new ExtendedClass()) instanceof BaseClass).toBe(true);
     });
 
+    it('inherited methods are not cloned - they are reference original in super class', function () {
+
+      var extendedClass = new ExtendedClass();
+      expect(extendedClass.doSomething).toBe(BaseClass.prototype.doSomething);
+
+    });
+
   });
 
-  describe('About constructor', function() {
+  describe('About constructors', function() {
 
     it('constructors should be not the same', function () {
       expect(BaseClass.constructor).not.toEqual(ExtendedClass.constructor);
+    });
+
+    it('super constructor should be called', function () {
+
     });
 
   });
