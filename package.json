@@ -32,5 +32,8 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-requirejs": "^0.2.2",
     "requirejs": "^2.1.17"
+  },
+  "dependencies": {
+    "remark": "git://github.com/gnab/remark"
   }
 }
