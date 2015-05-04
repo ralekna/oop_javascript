@@ -33,7 +33,5 @@
     "karma-requirejs": "^0.2.2",
     "requirejs": "^2.1.17"
   },
-  "dependencies": {
-    "remark": "git://github.com/gnab/remark"
-  }
+  "dependencies": {}
 }
