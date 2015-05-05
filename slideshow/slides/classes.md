@@ -36,21 +36,36 @@ This presentation is for EcmaScript 5 standard (ES5), so no trickery from earlie
 ## Functions
 
 Let's talk about functions and `this` keyword first
+
+--
+
+This is simple function that doesn't have a state.
+It knows about its params, surrounding objects and its name (if it's not anonymous)
+
 ```javascript
-// this is simple function. It doesn't have a state.
-// It knows about its params, and surounding objects
+var some = 'hello';
 function myFunction(param) {
-  // do something 
-  return param;
+  return some + ' ' + param;
 }
 
-var someClassInstance = new SomeClass('something');
-
-log( someClassInstance.prop ); // 'something'
-
-// in modern browsers, you can get class name with read-only property `name`
-log( SomeClass.name ); // 'SomeClass'
 ```
+
+--
+
+But it can't refer to itself because it is dead immediately.
+
+```javascript
+function myFunction() {
+  console.log('You know nothing, John Snow! ', this);
+}
+
+myFunction(); // output: "You know nothing, John Snow! undefined" 
+
+```
+
+Note: in previous versions of *JavaScript* `this` inside a global function used to reference `window` object
+
+---
 
 ## Plain classes
 
