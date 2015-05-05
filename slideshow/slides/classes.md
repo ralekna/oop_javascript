@@ -18,6 +18,7 @@ OOP is possible in languages that supports objects - sets of properties and meth
 ### What are classes?
 
 Definitions, *platonic* ideas and blueprints of things, people, actions and other stuff that in natural language would be *common noun* or would have *indefinite article*, in programming language resembles to classes.
+Classes can extend other classes and inherit their properties.
 
 ---
 
@@ -67,13 +68,35 @@ Note: in previous versions of *JavaScript* `this` inside a global function used 
 
 ---
 
-## `new` and constructors
+## Keyword `new` and constructors
 
---
+---
 
 ### What is constructor?
 
 Constructor in objective languages is a special method in a class that is executed during the creation of object to do some (optional) customization based on provided params.
+
+Like in *Java*
+
+```java
+public class Some {
+  public Some () {
+    System.out.println("Hello, some");
+  }
+}
+new Some(); // prints "Hello, some"
+```
+or *Ruby*
+```ruby
+
+class Some
+  def initialize
+    puts "Hello, some"
+  end
+end
+Some.new # prints "Hello, some"
+
+```
 
 ---
 
@@ -81,7 +104,7 @@ Constructor in objective languages is a special method in a class that is execut
 
 --
 
-
+Well, in *JavaScript* all functions are naturally classes and constructors of those classes themselves.
 
 ---
 
