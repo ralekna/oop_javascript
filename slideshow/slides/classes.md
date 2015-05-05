@@ -1,4 +1,4 @@
-class: center, middle
+<!-- class: center, middle -->
 # Object oriented programming
 
 ---
@@ -33,7 +33,7 @@ This presentation is for EcmaScript 5 standard (ES5), so no trickery from earlie
 
 ---
 
-## Functions
+## Functions and `this`
 
 Let's talk about functions and `this` keyword first
 
@@ -52,7 +52,7 @@ function myFunction(param) {
 
 --
 
-But it can't refer to itself because it is dead immediately.
+But it can't refer to itself because it is dead (returned) immediately.
 
 ```javascript
 function myFunction() {
@@ -64,6 +64,24 @@ myFunction(); // output: "You know nothing, John Snow! undefined"
 ```
 
 Note: in previous versions of *JavaScript* `this` inside a global function used to reference `window` object
+
+---
+
+## `new` and constructors
+
+--
+
+### What is constructor?
+
+Constructor in objective languages is a special method in a class that is executed during the creation of object to do some (optional) customization based on provided params.
+
+---
+
+### But if there are no built-in classes in JavaScript so how can there be constructors??!!1!
+
+--
+
+
 
 ---
 
