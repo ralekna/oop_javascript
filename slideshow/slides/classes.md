@@ -38,7 +38,73 @@ This presentation is for EcmaScript 5 standard (ES5), so no trickery from earlie
 
 Let's talk about functions and `this` keyword first
 
+---
+
+### Defining functions
+
+There are three (main) ways to define functions:
+
 --
+ 1. Defining a named function. The best thing of such declaration is that function is *hoisted* (declared at the very beginning of scope) even if in code it is in the middle of the scope.
+    Named functions also get a property `name` with function's name
+    ```javascript
+      function Some() {}
+      console.log(Some.name); // output: "Some"
+    ```
+--
+ 2. Assigning named function to a variable or to the property of object
+    Such functions are not *hoisted* but still get `name` property that is very good for stack traces when you pass functions as values.
+    ```javascript
+    var Some = function Some() {};
+    console.log(Some.name); // output: "Some"
+    ```
+--
+ 3. Assigning anonymous closures to a variable. Try using this method less
+    ```javascript
+    var Some = function() {};
+    console.log(Some.name); // output: ""
+    ```
+---
+
+### Calling (applying) functions and `this` keyword
+
+In *JavaScript* when you call a function it is always applied on something. That *something* inside a function is referenced as `this` pointer.
+Most of the time people call functions by using brackets `()`. This means that it will be applied on it's default or manually bind `this` object.
+You can manually specify target object on which function will be applied by calling functions with `apply()` or `call()` methods.
+In `strict mode` for globally defined functions this is a shorthand for calling `.apply(undefined, argumentsArray)` or `.call(undefined, arg1, arg2)`
+
+```javascript
+function myGlobalFunction() {
+  "use strict";
+  console.log(this);
+}
+myGlobalFunction(); // output: undefined
+
+```
+
+---
+For functions that are defined as object methods, default target is an object on which function is located
+```javascript
+var MyObject = { some: function() {
+    console.log(this == MyObject);
+  } };
+MyObject.some(); // output: true
+```
+--
+If we copy such function to another object it is automatically rebind to a new *host* object
+```javascript
+var MyObject = { some: function() {
+    console.log(this == MyObject);
+  } };
+var MyOtherObject = { some2: MyObject.some  };
+MyOtherObject.some2(); // output: false. Because `this`  points to `MyOtherObject`
+```
+--
+
+In old JavaScript versions and in non *strict mode* global functions are applied on `window` or `global` object.
+And that was the root of most evil associated with JavaScript development because browsers failed to report an error
+
+---
 
 This is simple function that doesn't have a state.
 It knows about its params, surrounding objects and its name (if it's not anonymous)
