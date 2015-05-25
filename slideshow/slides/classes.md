@@ -106,6 +106,16 @@ Some.new # prints "Hello, some"
 
 Well, in *JavaScript* all functions are naturally classes and constructors of those classes themselves.
 
+--
+
+So a keyword `new` just forces a function to behave like a class constructor.
+
+--
+
+That is what happens when you call a function as constructor behind the scenes
+ 1. A new plain object is created like `{}`
+ 2. All properties of *prototype* object of the Function that is called as constructor is copied to a newly created object
+
 ---
 
 ## Plain classes

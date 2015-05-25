@@ -1,4 +1,5 @@
 define(function () {
+  'use strict';
 
   describe('Explanation of functions and difference between their declaration', function() {
 
@@ -34,7 +35,7 @@ define(function () {
 
         (function(){ some(); })();
 
-        var some = function some(){} // adding name to function expression doesn't help
+        var some = function some(){}; // adding name to function expression doesn't help
 
       }).toThrow(new TypeError('undefined is not a function'));
     });
@@ -74,9 +75,41 @@ define(function () {
 
   });
 
+  describe('Explanation of `this` keyword', function () {
+
+    describe('`this` keyword is a special pointer in a function that holds a reference to an object on which function is called on', function (){
+
+      it('`this` should point to String \"Hello\"', function () {
+
+        function helloCheck () {
+          expect(this).toEqual('Hello');
+        }
+
+        helloCheck.apply('Hello');
+      });
+
+      it('`this` should be `undefined` in all five cases', function () {
+
+        function nullCheck () {
+          expect(this).toBeUndefined();
+        }
+
+        nullCheck();
+        nullCheck.apply(undefined);
+        nullCheck.apply();
+        nullCheck.call(undefined);
+        nullCheck.call();
+      });
+
+    });
+
+  });
+
   describe('Explanation of prototype', function() {
 
+    describe('during construction of object with constructor a new plain objects is created ', function() {
 
+    });
 
   });
 
