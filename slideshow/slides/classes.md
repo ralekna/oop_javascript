@@ -36,7 +36,7 @@ This presentation is for EcmaScript 5 standard (ES5), so no trickery from earlie
 
 ---
 
-## JavaScript functions fundamentals
+## Fundamentals of JavaScript functions
 
 Let's talk about *JavaScript* functions, their applications, contexts, `this` keyword and binding
 
@@ -207,45 +207,53 @@ In *underscore* use `_.bind()`
 ```javascript
 MyOtherObject.traceThisName = _.bind(MyObject.traceThisName, MyObject);
 ```
-Behind the scenes these methods use wrapping in browsers that doesn't support `.bind()`
+Behind the scenes these methods use wrapping in browsers that doesn't support `.bind()`. A primitive version of it below:
+```javascript
+function bind(func, context, defaultArgs) {
+  defaultArgs = defaultArgs || [];
+  return function bound(args) {
+    args = args || [];
+    return func.apply(context, defaultArgs.concat(args));
+  }
+}
+```
 ---
-## Keyword `new` and constructors
-
+## Classes and prototypes
 ---
+### What is class (again)?
+In programming a class is an object (a set) with various properties that can be values, other objects or functions. This object is used as a model to make clones of it.
 
+In some languages like *Java* classes are deep feature of the language but in others like *JavaScript* it much more just a syntactic sugar.
+Usually an object created from a class get some metadata that tells form which class object was created.
+---
 ### What is constructor?
 
-Constructor in objective languages is a special method in a class that is executed during the creation of object to do some (optional) customization based on provided params.
+Constructor in objective languages is a special function in a class that is applied on freshly created clone of class to do some (optional) initial customization based on provided params.
 
 Like in *Java*
 
 ```java
-public class Some {
-  public Some () {
-    System.out.println("Hello, some");
+public class Greeter {
+
+  private String name;
+
+  public Greeter(String name) {
+    this.name = name;
+    this.sayHello();
+  }
+
+  public void sayHello() {
+    System.out.println("Hello, " + this.name);
   }
 }
-new Some(); // prints "Hello, some"
-```
-or *Ruby*
-```ruby
-
-class Some
-  def initialize
-    puts "Hello, some"
-  end
-end
-Some.new # prints "Hello, some"
-
+new Greeter("Rytis"); // prints "Hello, Rytis"
 ```
 
 ---
-
-### But if there are no built-in classes in JavaScript so how can there be constructors??!!1!
-
+### But if there are no built-in classes in JavaScript so how can there be constructors?
 --
 
-Well, in *JavaScript* all functions are naturally classes and constructors of those classes themselves.
+Well, in *JavaScript* all functions are naturally constructors of those classes themselves.
 
 --
 
