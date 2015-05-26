@@ -1,42 +1,44 @@
 <!-- class: center, middle -->
-# Object oriented programming
+# Object oriented programming in JavaScript
 
 ---
 
-### What is object oriented programming?
+## Introduction
+
+#### What is object oriented programming?
 
 Object oriented programming (OOP) is the method to translate real word objects and ideas into programs that are idealized reflection of real life objects and their properties interactions.
 
 --
 
-### What are objects?
+#### What are objects?
 
 OOP is possible in languages that supports objects - sets of properties and methods (functions that belong to objects) that can hold their own state.
 
 --
 
-### What are classes?
+#### What are classes?
 
 Definitions, *platonic* ideas and blueprints of things, people, actions and other stuff that in natural language would be *common noun* or would have *indefinite article*, in programming language resembles to classes.
 Classes can extend other classes and inherit their properties.
 
 ---
 
-## OOP in JavaScript
+#### OOP in JavaScript
 
 In JavaScript till ES6 there is no such native thing as classes. This situation makes OOP in JavaScript complicated but that's why I created this slide show for you.
 
 --
 
-## This is EcmaScript 5
+#### This is EcmaScript 5
 
 This presentation is for EcmaScript 5 standard (ES5), so no trickery from earlier versions apply and should be considered unwelcome. To enforce ES5 in code you would write `'use strict';` at the beginning of the function body but in this presentation I will not explicitly write it, so just have in mind that there is strict mode everywhere.
 
 ---
 
-## Functions and `this`
+## JavaScript functions fundamentals
 
-Let's talk about functions and `this` keyword first
+Let's talk about *JavaScript* functions, their applications, contexts, `this` keyword and binding
 
 ---
 
@@ -59,16 +61,16 @@ There are three (main) ways to define functions:
     console.log(Some.name); // output: "Some"
     ```
 --
- 3. Assigning anonymous closures to a variable. Try using this method less
+ 3. Assigning anonymous closures to a variable. Try using this method less.
     ```javascript
     var Some = function() {};
     console.log(Some.name); // output: ""
     ```
 ---
 
-### Calling (applying) functions and `this` keyword
+### Calling functions, context and `this` keyword
 
-In *JavaScript* when you call a function it is always applied on something. That *something* inside a function is referenced as `this` pointer.
+In *JavaScript* when you call a function it is always applied on something - a context. That *context* inside a function is referenced as `this` pointer.
 Most of the time people call functions by using brackets `()`. This means that it will be applied on it's default or manually bound `this` object.
 
 ```javascript
@@ -81,7 +83,7 @@ myGlobalFunction(); // output: undefined
 myGlobalFunction.apply(undefined); // output: undefined
 ```
 --
-You can apply functions on specific objects
+You can manually specify target object on which function will be applied by calling functions with `apply()` or `call()` methods.
 ```javascript
 // Keyword `this` points to "Hello" String object
 myGlobalFunction.apply('Hello'); // output: "Hello".
@@ -93,7 +95,7 @@ function sayToName(name) {
 sayToName.call('Hello,', 'Rytis'); // output: "Hello, Rytis"
 ```
 ---
-### Calling (applying) functions and `this` keyword in non strict environment
+#### Calling global functions and `this` keyword in non strict environment
 
 In old JavaScript versions and in non *strict mode* global functions are applied on `window` or `global` object.
 
@@ -112,59 +114,101 @@ myGlobalNonStrictFunction.call(null); // output: window
 ```
 
 And that was the root of most evil associated with JavaScript development because browsers failed to report an error.
+
 **Always try to use `"use strict";` to help browser to help you to avoid this prehistorical thing!**
 
-You can manually specify target object on which function will be applied by calling functions with `apply()` or `call()` methods.
-In `strict mode` for globally defined functions this is a shorthand for calling `.apply(undefined, argumentsArray)` or `.call(undefined, arg1, arg2)`
-
-
 ---
+### Functions' contexts
+
+By default in *JavaScript* functions are not tied to one context - it may change depending on where function is executed
+
+--
 For functions that are defined as object properties, default target is an object on which function is located
 ```javascript
 var MyObject = {};
 var MyOtherObject = {};
-MyObject.some = function() {
-    console.log(this == MyObject, this == MyOtherObject);
+
+function traceThis() {
+  "use strict";
+  console.log(this == undefined, this == MyObject, this == MyOtherObject);
+}
+traceThis(); // output: true, false, false
+MyObject.traceThis = traceThis;
+MyObject.traceThis(); // output: false, true, false
+
+MyOtherObject.traceThis = MyObject.traceThis;
+MyOtherObject.traceThis(); // output: false, false, true
+```
+--
+Contexts of functions that are passed as params to other functions are always `undefined`
+```javascript
+MyObject.execFunction = function(func) { func(); };
+MyObject.execFunction(MyObject.traceThis); // output: true, false, false
+```
+---
+### Functions binding to context
+Untied function context is quite a useful feature that gives lots of flexibility - it helps reusing function in different situations.
+
+But there are many situations when you want to bind specific context to function so it doesn't change when function is traveling around the code.
+
+Most common situation is when a function closure is passed around as argument for other functions.
+---
+#### Binding with `.bind()`
+In *ES5* function's `.bind()` method comes to help. It creates a new function from a given function that is tied to one context forever.
+```javascript
+var MyObject = {
+  name: 'MyObject',
+  traceThisName: function() {
+    console.log(this.name);
+  }
 };
-MyObject.some(); // output: true, false
+MyObject.traceThisName(); // output: "MyObject"
+
+var MyOtherObject = { name: 'MyOtherObject'};
+MyOtherObject.traceThisName = MyObject.traceThisName;
+MyOtherObject.traceThisName(); // output: "MyOtherObject"
+MyOtherObject.traceThisNameBound = MyObject.traceThisName.bind(MyObject);
+MyOtherObject.traceThisNameBound(); // output: "MyObject"
+// You can't rebind function that is already bound!
+MyOtherObject.traceThisNameBound.apply(MyOtherObject); // output: "MyObject"
 ```
---
-If we copy such function to another object it is automatically rebind to a new *host* object
+---
+#### Binding by wrapping a function into closure
+Unfortunately in *ES* versions before 5th there is no `.bind` method, so other simple technique was used to accomplish same thing - wrapping
 ```javascript
-MyOtherObject.some = MyObject.some;
-MyOtherObject.some(); // output: false, true
+var MyObject = {
+  name: 'MyObject',
+  traceThisName: function() {
+    console.log(this.name);
+  }
+};
+var MyOtherObject = { name: 'MyOtherObject'};
+MyOtherObject.traceThisNameBound = function() {
+  return MyObject.traceThisName();
+};
+MyOtherObject.traceThisNameBound(); // output: "MyObject"
 ```
+Context is not lost because `this` keyword is not used in wrapping function - only direct reference to object.
 
 ---
-
-This is simple function that doesn't have a state.
-It knows about its params, surrounding objects and its name (if it's not anonymous)
-
+#### Binding with most common JS libraries
+With *jQuery* you can bind function by using `$.proxy()` method
 ```javascript
-var some = 'hello';
-function myFunction(param) {
-  return some + ' ' + param;
-}
-
+var MyObject = {
+  name: 'MyObject',
+  traceThisName: function() {
+    console.log(this.name);
+  }
+};
+var MyOtherObject = { name: 'MyOtherObject'};
+MyOtherObject.traceThisName = $.proxy(MyObject.traceThisName, MyObject);
 ```
-
---
-
-But it can't refer to itself because it is dead (returned) immediately.
-
+In *underscore* use `_.bind()`
 ```javascript
-function myFunction() {
-  console.log('You know nothing, John Snow! ', this);
-}
-
-myFunction(); // output: "You know nothing, John Snow! undefined" 
-
+MyOtherObject.traceThisName = _.bind(MyObject.traceThisName, MyObject);
 ```
-
-Note: in previous versions of *JavaScript* `this` inside a global function used to reference `window` object
-
+Behind the scenes these methods use wrapping in browsers that doesn't support `.bind()`
 ---
-
 ## Keyword `new` and constructors
 
 ---
