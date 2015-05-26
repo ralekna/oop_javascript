@@ -46,13 +46,13 @@ There are three (main) ways to define functions:
 
 --
  1. Defining a named function. The best thing of such declaration is that function is *hoisted* (declared at the very beginning of scope) even if in code it is in the middle of the scope.
-    Named functions also get a property `name` with function's name
+    Named functions also get a property `name` with function's name.
     ```javascript
       function Some() {}
       console.log(Some.name); // output: "Some"
     ```
 --
- 2. Assigning named function to a variable or to the property of object
+ 2. Assigning named function to a variable or to the property of object.
     Such functions are not *hoisted* but still get `name` property that is very good for stack traces when you pass functions as values.
     ```javascript
     var Some = function Some() {};
@@ -69,9 +69,7 @@ There are three (main) ways to define functions:
 ### Calling (applying) functions and `this` keyword
 
 In *JavaScript* when you call a function it is always applied on something. That *something* inside a function is referenced as `this` pointer.
-Most of the time people call functions by using brackets `()`. This means that it will be applied on it's default or manually bind `this` object.
-You can manually specify target object on which function will be applied by calling functions with `apply()` or `call()` methods.
-In `strict mode` for globally defined functions this is a shorthand for calling `.apply(undefined, argumentsArray)` or `.call(undefined, arg1, arg2)`
+Most of the time people call functions by using brackets `()`. This means that it will be applied on it's default or manually bound `this` object.
 
 ```javascript
 function myGlobalFunction() {
@@ -79,30 +77,63 @@ function myGlobalFunction() {
   console.log(this);
 }
 myGlobalFunction(); // output: undefined
+// is same as
+myGlobalFunction.apply(undefined); // output: undefined
+```
+--
+You can apply functions on specific objects
+```javascript
+// Keyword `this` points to "Hello" String object
+myGlobalFunction.apply('Hello'); // output: "Hello".
 
+function sayToName(name) {
+  console.log(this + ' ' + name);
+}
+// first argument is `thisObject` and the rest is arguments to function
+sayToName.call('Hello,', 'Rytis'); // output: "Hello, Rytis"
+```
+---
+### Calling (applying) functions and `this` keyword in non strict environment
+
+In old JavaScript versions and in non *strict mode* global functions are applied on `window` or `global` object.
+
+```javascript
+function myGlobalNonStrictFunction() {
+  console.log(this);
+}
+myGlobalNonStrictFunction(); // output: window
+// is same as
+myGlobalNonStrictFunction.apply(); // output: window
+myGlobalNonStrictFunction.apply(undefined); // output: window
+myGlobalNonStrictFunction.apply(null); // output: window
+myGlobalNonStrictFunction.call(); // output: window
+myGlobalNonStrictFunction.call(undefined); // output: window
+myGlobalNonStrictFunction.call(null); // output: window
 ```
 
+And that was the root of most evil associated with JavaScript development because browsers failed to report an error.
+**Always try to use `"use strict";` to help browser to help you to avoid this prehistorical thing!**
+
+You can manually specify target object on which function will be applied by calling functions with `apply()` or `call()` methods.
+In `strict mode` for globally defined functions this is a shorthand for calling `.apply(undefined, argumentsArray)` or `.call(undefined, arg1, arg2)`
+
+
 ---
-For functions that are defined as object methods, default target is an object on which function is located
+For functions that are defined as object properties, default target is an object on which function is located
 ```javascript
-var MyObject = { some: function() {
-    console.log(this == MyObject);
-  } };
-MyObject.some(); // output: true
+var MyObject = {};
+var MyOtherObject = {};
+MyObject.some = function() {
+    console.log(this == MyObject, this == MyOtherObject);
+};
+MyObject.some(); // output: true, false
 ```
 --
 If we copy such function to another object it is automatically rebind to a new *host* object
 ```javascript
-var MyObject = { some: function() {
-    console.log(this == MyObject);
-  } };
-var MyOtherObject = { some2: MyObject.some  };
-MyOtherObject.some2(); // output: false. Because `this`  points to `MyOtherObject`
+MyOtherObject.some = MyObject.some;
+MyOtherObject.some(); // output: false, true
 ```
---
-
-In old JavaScript versions and in non *strict mode* global functions are applied on `window` or `global` object.
-And that was the root of most evil associated with JavaScript development because browsers failed to report an error
 
 ---
 
