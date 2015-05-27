@@ -556,6 +556,11 @@ layout: true
 
   Then when you want to expose some insignificant information about class (like version) or store constants that may be used as class functions parameters.
   Be aware that it is very easy to lose the values of these variables by accident!
---
+---
 
+- **What should I put into constructor?**
 
+  Nothing, ideally. It may set constructor arguments to instance variables but it should be optional. Constructor minimalism is a requirement for TDD.
+
+---
+### Extending classes
