@@ -4,7 +4,7 @@
 define('classes/BaseClass', function() {
 
   function BaseClass () {
-    console.log('in constructor', this);
+    // console.log('in constructor', this);
     if (this == window) {
       return new BaseClass();
     }
@@ -12,7 +12,7 @@ define('classes/BaseClass', function() {
 
   BaseClass.prototype = {
     doSomething: function () {
-      console.log('hey');
+
     }
   };
 

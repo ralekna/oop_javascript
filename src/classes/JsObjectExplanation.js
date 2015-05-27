@@ -3,7 +3,7 @@
  */
 var Some = {
   myMethod: function () {
-    console.log('My text');
+
   }
 };
 

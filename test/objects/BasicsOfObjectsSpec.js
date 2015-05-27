@@ -26,7 +26,7 @@ define(function () {
         (function(){ some(); })(); // self executing clojure
 
         var some = function() {};
-      }).toThrow(new TypeError('undefined is not a function'));
+      }).toThrowError(TypeError);
 
     });
 
@@ -37,7 +37,7 @@ define(function () {
 
         var some = function some(){}; // adding name to function expression doesn't help
 
-      }).toThrow(new TypeError('undefined is not a function'));
+      }).toThrowError(TypeError);
     });
 
     it('function should return normally', function () {
@@ -47,7 +47,7 @@ define(function () {
 
         function some(){}
 
-      }).not.toThrow(new TypeError('undefined is not a function'));
+      }).not.toThrowError(TypeError);
     });
 
   });
@@ -60,7 +60,7 @@ define(function () {
     var MyClass = function() {};
 
     it('should throw TypeError when trying to construct new object by using `new` statement', function () {
-      expect(function () { new MyObject(); }).toThrow( new TypeError("object is not a function"));
+      expect(function () { new MyObject(); }).toThrowError(TypeError);
     });
 
     it('should normally create instance of MyClass by using statement `new`', function () {
@@ -108,6 +108,17 @@ define(function () {
   describe('Explanation of prototype', function() {
 
     describe('during construction of object with constructor a new plain objects is created ', function() {
+      it('should create an object with a prototype wihtout using new keyword', function () {
+        var some;
+        function Some() {
+          expect(this.constructor).toBe(Some);
+          expect(this).toBe(some);
+        }
+        Some.prototype.hello = function () {};
+        some = {};
+        some.__proto__ = Some.prototype;
+        Some.apply(some);
+      });
 
     });
 

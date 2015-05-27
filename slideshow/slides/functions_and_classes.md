@@ -219,39 +219,111 @@ function bind(func, context, defaultArgs) {
 ```
 ---
 ## Classes and prototypes
----
-### What is class (again)?
+
+--
+### Some basic theory stuff about classes
+
+#### What is class (again)?
 In programming a class is an object (a set) with various properties that can be values, other objects or functions. This object is used as a model to make clones of it.
 
 In some languages like *Java* classes are deep feature of the language but in others like *JavaScript* it much more just a syntactic sugar.
-Usually an object created from a class get some metadata that tells form which class object was created.
+
+Usually an object created from a class get some metadata that tells from which class object was created.
+
+Class members belong to either class instance (*instance* members) or to class itself (*static* members).
+
+They may have different access levels like *public* (accessible to whole world), *private* (accessible only to other members of same class) or *protected* (accessible to other members of same class or subclass) 
+
 ---
-### What is constructor?
+#### What is constructor?
 
 Constructor in objective languages is a special function in a class that is applied on freshly created clone of class to do some (optional) initial customization based on provided params.
 
-Like in *Java*
+---
+### Creating classes and instantiating them in JavaScript
+--
 
-```java
-public class Greeter {
-
-  private String name;
-
-  public Greeter(String name) {
-    this.name = name;
-    this.sayHello();
-  }
-
-  public void sayHello() {
-    System.out.println("Hello, " + this.name);
-  }
-}
-new Greeter("Rytis"); // prints "Hello, Rytis"
-```
+As mentioned earlier, in *JavaScript* traditional classes doesn't exist so you need some knowledge to simulate features of traditional classes. 
 
 ---
-### But if there are no built-in classes in JavaScript so how can there be constructors?
+#### Constructors in JavaScript 
+
+In traditional class (like in *Java*), constructor is held inside class body
+```java
+public class Some {
+  // a start of class body
+  public Some() {} // <- constructor
+  public void someMethod() {}
+  // the end of class body
+}
+```
 --
+In *JavaScript* every function is also a constructor for a class which definition is stored in function's `prototype` property.
+```javascript
+function Some() {} // <- constructor
+// a start of class body
+Some.prototype.someMethod: function(){}
+Some.prototype.otherMethod: function(){}
+// the end of class body
+```
+Newly defined function's `prototype` property is usually just a plain `Object`
+
+---
+#### Instantiation
+To create a new instance of class a keyword `new` is used in fornt of calling constructor function
+```javascript
+function Some() {
+  console.log('inside constructor', this);
+}
+
+Some.prototype.someMethod = function(){
+  console.log('inside someMethod', this);
+};
+
+var some = new Some(); // output: "inside constructor" Some {someMethod: function()}
+some.someMethod(); // output: "inside someMethod" Some {someMethod: function()}
+```
+---
+name: instantiation-explanation
+#### What happens during instantiation?
+
+---
+template: instantiation-explanation
+count: false
+It is important to understand what happens behind the scenes when a constructor is called
+
+---
+template: instantiation-explanation
+count: false
+
+- A new plain object is created
+  ```javascript
+  var o = {};
+  ```
+--
+- Surface properties of prototype are copied into `o` object.
+ 
+  **Remember that it is not a deep object cloning - properties are just copied!** If there are any references then they will be shared between all new instances - this can lead to big headaches.
+
+  ```javascript
+  for (var name in Some.prototype) {
+      o[name] = Some.prototype[name];
+  }
+  ```
+--
+- Object gets reference original `prototype` via `__proto__` property
+   ```javascript
+   o.__proto__ = Some.prototype;
+   ```
+--
+- Constructor is applied on object `o`
+   ```javascript
+   Some.apply(o); // output: "inside constructor", Some {}
+   ```
+---
+
+#### The primitive way
+
 
 Well, in *JavaScript* all functions are naturally constructors of those classes themselves.
 

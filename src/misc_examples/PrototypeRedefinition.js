@@ -10,7 +10,7 @@ var ExampleClass = (function() {
   ExampleClass.prototype = {
 
     some: function () {
-      console.log('My text');
+
     }
 
   };
@@ -27,14 +27,14 @@ ex1.some(); // will trace 'My text'
 ex3.some(); // will trace 'My text'
 
 ex3.some = function() {
-  console.log('My custom text');
+
 };
 
 ex3.some(); // will trace 'My custom text'
 
 // redefining method some in prototype
 ExampleClass.prototype.some = function () {
-  console.log('My other text');
+
 };
 
 var ex2 = new ExampleClass();
