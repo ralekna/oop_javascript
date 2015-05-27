@@ -1,7 +1,7 @@
 <!-- class: center, middle -->
 # Object oriented programming in JavaScript
 
-.footnote[by Rytis Alekna (r.alekna@gmail.com)]
+.footnote[by Rytis Alekna @ SameSystem (r.alekna@gmail.com)]
 .footnote[slideshow powered with Remark.js]
 ---
 
@@ -536,13 +536,26 @@ layout: true
 
 - **When should I use *private* *static* methods?**
 
-  Then when want to operate only on function input and not create side effects in global state.
+  Then when you want to operate only on function input and not create side effects in global state.
   You should try to use static functions as much as possible because it easily debuggable, saves computers memory and most of the time allows to avoid tricky function binding
 ---
 
+- **When should I use *public* *static* methods?**
+
+  Then when you want to expose some utility functionality that is associated with class functionality. It is usually used for various shortcuts in class API.
+  Programmers also like to use static members for various management tasks but it can be easily overused and flaw the structure of the class.
+--
+
 - **When should I use *private* *static* variables?**
 
-  Then when you want to store some global settings for behaviour of instances of that class.
+  Then when you want to store some global settings or constants for behaviour of instances of that class.
   They are also very good when you want register, manage, access and pool all created class instances.
 --
+
+- **When should I use *public* *static* variables?**
+
+  Then when you want to expose some insignificant information about class (like version) or store constants that may be used as class functions parameters.
+  Be aware that it is very easy to lose the values of these variables by accident!
+--
+
 
