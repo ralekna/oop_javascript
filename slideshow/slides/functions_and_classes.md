@@ -266,7 +266,7 @@ Some.prototype.someMethod: function(){}
 Some.prototype.otherMethod: function(){}
 // the end of class body
 ```
-Newly defined function's `prototype` property is usually just a plain `Object`
+Newly defined function's `prototype` property is usually just a plain `Object` with a property `constructor` that refers to constructor function itself
 
 ---
 #### Instantiation
@@ -321,26 +321,66 @@ count: false
    Some.apply(o); // output: "inside constructor", Some {}
    ```
 ---
-
-#### The primitive way
-
-
-Well, in *JavaScript* all functions are naturally constructors of those classes themselves.
-
---
-
-So a keyword `new` just forces a function to behave like a class constructor.
-
---
-
-That is what happens when you call a function as constructor behind the scenes
- 1. A new plain object is created like `{}`
- 2. All properties of *prototype* object of the Function that is called as constructor is copied to a newly created object
-
+name: basic-class
+### Basic class
 ---
-
-## Plain classes
-
+template: basic-class
+In example bellow you can see a very basic class setup
+```javascript
+function SomeClass(name) {
+  this.name = name; // setting property in constructor
+  // everything you set in constructor is later visible in prototype's functions
+  this.myInstanceMethod();
+}
+SomeClass.myStaticProperty = "I\'m static property";
+SomeClass.myStaticMethod = function() {
+  console.log(SomeClass.myStaticProperty);
+};
+SomeClass.prototype.predefinedInstanceProperty = "version";
+// ^ be sure to not set in prototype objects that are passed by reference,
+// ^ because it will be shared by all instances.
+// ^ Use only primitive values or null
+SomeClass.prototype.myInstanceMethod() {
+  console.log(this.name);
+  SomeClass.myStaticMethod(); // You can access static members
+}
+```
+---
+template: basic-class
+#### Features of plain class
+- A public constructor where you can do initial setup
+  ```javascript
+  function SomeClass(name) {
+      this.name = name; // setting instance and static properties
+      this.myInstanceMethod(); // calling instance and static methods
+  }
+  ```
+--
+- Public static properties and methods
+  ```javascript
+  SomeClass.myStaticProperty = "I\'m static property";
+  SomeClass.myStaticMethod = function() {
+      console.log(SomeClass.myStaticProperty);
+  };
+  ```
+--
+- Public instance properties and methods
+  ```javascript
+  SomeClass.prototype.predefinedInstanceProperty = "version";
+  SomeClass.prototype.myInstanceMethod() {
+      console.log(this.name);
+      SomeClass.myStaticMethod();
+  }
+  ```
+---
+template: basic-class
+#### Cons of basic class
+--
+- No privacy:
+  You can't encapsulate any properties
+--
+- Definition of a class is spread around global scope
+---
 ### The simplest class
 
 Use such class type only for value objects, because they doesn't allow elegant private static scope and is not enclosed in a block scope.
