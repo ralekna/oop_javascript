@@ -1,6 +1,8 @@
 <!-- class: center, middle -->
 # Object oriented programming in JavaScript
 
+.footnote[by Rytis Alekna (r.alekna@gmail.com)]
+.footnote[slideshow powered with Remark.js]
 ---
 
 ## Introduction
@@ -17,10 +19,16 @@ OOP is possible in languages that supports objects - sets of properties and meth
 
 --
 
+#### What is state?
+
+State is all properties of object that can change during program execution.
+
+--
+
 #### What are classes?
 
-Definitions, *platonic* ideas and blueprints of things, people, actions and other stuff that in natural language would be *common noun* or would have *indefinite article*, in programming language resembles to classes.
-Classes can extend other classes and inherit their properties.
+Classes are blueprint objects that describes a structure of objects that will be created according to that blueprint.
+Usually classes can extend other classes and inherit their structure - this helps avoiding self repetition for similar structures and unifies classes into groups.
 
 ---
 
@@ -340,7 +348,7 @@ SomeClass.prototype.predefinedInstanceProperty = "version";
 // ^ be sure to not set in prototype objects that are passed by reference,
 // ^ because it will be shared by all instances.
 // ^ Use only primitive values or null
-SomeClass.prototype.myInstanceMethod() {
+SomeClass.prototype.myInstanceMethod = function() {
   console.log(this.name);
   SomeClass.myStaticMethod(); // You can access static members
 }
@@ -367,7 +375,7 @@ template: basic-class
 - Public instance properties and methods
   ```javascript
   SomeClass.prototype.predefinedInstanceProperty = "version";
-  SomeClass.prototype.myInstanceMethod() {
+  SomeClass.prototype.myInstanceMethod = function() {
       console.log(this.name);
       SomeClass.myStaticMethod();
   }
@@ -376,65 +384,165 @@ template: basic-class
 template: basic-class
 #### Cons of basic class
 --
+
 - No privacy:
-  You can't encapsulate any properties
+  You can't encapsulate anything except by using some stupid hacks
 --
+
 - Definition of a class is spread around global scope
+--
+
+- No static constructor that initializes a class (not an instance)
 ---
-### The simplest class
-
-Use such class type only for value objects, because they doesn't allow elegant private static scope and is not enclosed in a block scope.
-
-```javascript
-function SomeClass(prop) {
-  // this function body is constructor
-
-  // if you set
-  this.prop = prop;
-}
-
-SomeClass.public_static_property = 'my static value';
-
-var someClassInstance = new SomeClass('something');
-
-log( someClassInstance.prop ); // 'something'
-
-// in modern browsers, you can get class name with read-only property `name`
-log( SomeClass.name ); // 'SomeClass'
-```
-
+layout: true
+### Featured class
 ---
 
-### Full featured class 
+Let's enhance our `SomeClass` class to get those features. At first surround our previous class definition by self executing closure that returns class constructor as its return value.
 ```javascript
-(function() {
-  // code in this function is executed once. It is a static class constructor
-  // define private static vars and functions here. They will be accessible to all members of class.
-  var some_private_static_var = 'Something';
-  
-  // if you want to write a method that doesn't change class instance state it is best thing to define it in static scope, 
-  // because it saves computer memory
-  function myPrivateUtility () {
-  }
-  
-  function SomeClass(my_param) {
-    // this is non static class constructor
-    // it is executed everytime when new instance is created
-    this.my_instance_variable = my_param;
-  }
-  
-  SomeClass.prototype = {
-    // here goes instance methods and variables
-    my_instance_variable: null, // <-- have in mind that if you set a variable value here it will be shared between all instances. 
-    // If you don't want it to be shared then set the value in while in constructor like this.my_instance_valiable = 'something';
-    myInstanceMethod: function () {
-      // instance varaibles are accesible by using this
-      this.my_instance_variable
-    },
+var SomeClass /* Save returned class definition somewhere */ = (function() {
+  // All class definition is inside a clojure
+  // Put static members at the top of the class definition
+  SomeClass.myPublicStaticProperty = "I\'m static property";
+  SomeClass.myPublicStaticMethod = function() {
+      console.log(SomeClass.myPublicStaticProperty);
   };
-  
-  // return constructor
+
+  function SomeClass(name) { // constructor
+      this.name = name;
+      this.myPublicInstanceMethod();
+  }
+
+  // add prototype properties and methods here
+  SomeClass.prototype.predefinedPublicInstanceProperty = "version";
+  SomeClass.prototype.myPublicInstanceMethod = function() {
+      // instance members are accessible to other instance members by using `this`
+      console.log(this.name, this.predefinedInstanceProperty);
+      SomeClass.myPublicStaticMethod();
+  }
+  return SomeClass; // return constructor
+})(); // execute closure
+```
+---
+
+Let's add private static members. Some members were removed to save space.
+```javascript
+var SomeClass = (function() {
+  // private static members are accessible for all class members
+  var privateStaticVar = 'version';
+  var uuid = 0;
+  function privateStaticFunction() {
+    console.log(privateStaticVar);
+    // Remember that you can't use `this` inside static functions -
+    // it will either be `undefined` (strict mode) or will point to `window` object!
+  }
+
+  function SomeClass(name) {
+    uuid++;
+    privateStaticFunction();
+  }
+
+  SomeClass.prototype.myPublicInstanceMethod = function() {
+      console.log(uuid);
+      privateStaticFunction();
+  }
   return SomeClass;
-  
 })();
 ```
+
+---
+
+Let's finnish our class and add static constructor. It may be used for initialising some constants
+```javascript
+var SomeClass = (function() {
+  var MY_CONSTANT_ARRAY = [];
+
+  // Static constructor - it is just another self executing closure.
+  (function() {
+    // variables inside static constructor doesn't trash static class environment
+    for( var i = 0, j = 2; i < 1000; i++) MY_CONSTANT_ARRAY.push( i * j );
+    privateStaticFunction(); // you can access all static members of class
+  })();
+
+  function privateStaticFunction() {
+    console.log(privateStaticVar);
+    // Remember that you can't use `this` inside static functions -
+    // it will either be `undefined` (strict mode) or will point to `window` object!
+  }
+
+  function SomeClass(name) { // Instance constructor
+    this.myPublicInstanceMethod();
+  }
+
+  SomeClass.prototype.myPublicInstanceMethod = function() { /* */ }
+  return SomeClass;
+})();
+```
+
+
+---
+
+```javascript
+var SomeClass = (function() {
+  var PRIVATE_CONSTANT = "constant";
+
+  function privateStaticMethod() {
+    console.log(privateStaticVar);
+  }
+
+  SomeClass.myPublicStaticProperty = "I\'m static property";
+  SomeClass.myPublicStaticMethod = function() {
+      privateStaticMethod()
+      return SomeClass.myPublicStaticProperty + privateStaticVar;
+  };
+
+  (function() { // static constructor
+    privateStaticMethod();
+  })();
+
+  function SomeClass(name) { // Instance constructor
+    this.name = name;
+    this.myPublicInstanceMethod();
+  }
+
+  SomeClass.prototype.myPublicInstanceProperty  = PRIVATE_CONSTANT;
+  SomeClass.prototype.myPublicInstanceMethod    = function(arg) {
+    return this.name + this.myPublicInstanceProperty + PRIVATE_CONSTANT;
+  }
+  return SomeClass;
+})();
+```
+
+---
+layout: true
+### Using different types of class members
+---
+--
+
+- **When should I use a class instead of plain object?**
+
+  Then when your object is supposed to have changing state and contains functions that interact with other properties of object.
+--
+
+- **When should I use instance methods?**
+
+  Then when you want to change or get a state of object and hide the logic of it.
+--
+
+- **When should I use instance variables?**
+
+  Then when you want to store a very unique information about object's state
+--
+
+- **When should I use *private* *static* methods?**
+
+  Then when want to operate only on function input and not create side effects in global state.
+  You should try to use static functions as much as possible because it easily debuggable, saves computers memory and most of the time allows to avoid tricky function binding
+---
+
+- **When should I use *private* *static* variables?**
+
+  Then when you want to store some global settings for behaviour of instances of that class.
+  They are also very good when you want register, manage, access and pool all created class instances.
+--
+
