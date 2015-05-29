@@ -353,6 +353,22 @@ SomeClass.prototype.myInstanceMethod = function() {
   SomeClass.myStaticMethod(); // You can access static members
 }
 ```
+
+---
+
+template: basic-class
+Let's try use it
+
+```javascript
+var some = new SomeClass('Rytis');
+// output:
+// "Rytis"
+// "I'm static property"
+
+console.log(some instanceof SomeClass); // true
+
+```
+
 ---
 template: basic-class
 #### Features of plain class
@@ -644,6 +660,113 @@ If we test now we would see that ChildClass now has a type of ChildClass and Bas
 var child = new ChildClass();
 var base  = new BaseClass();
 
-console.log( child instanceof ChildClass, child instanceof BaseClass); // true, true
-console.log( base instanceof ChildClass, base instanceof BaseClass); // false, true
+console.log(child instanceof ChildClass); // true
+console.log(child instanceof BaseClass); // true
+
+// BaseClass didn't get ChildClass type in return :)
+console.log(base instanceof ChildClass); // false
+console.log(base instanceof BaseClass); // true
 ```
+
+---
+layout: true
+### Using super class in child class
+---
+
+#### Calling inherited method from super class
+
+While type sharing is important aspect in OOP but the main purpose of inheritance ir sharing functionality.
+Let's class a method in child class that was defined in super class.
+
+```javascript
+var child = new ChildClass();
+child.myPublicInstanceMethod('hello');
+// output: In BaseClass.myPublicInstanceMethod, hello
+```
+--
+
+Simple, huh?
+
+---
+
+#### Calling super constructor
+
+Let's modify our ChildClass so inside constructor we would call constructor from super class.
+Calling super constructor sometimes is important because without it sometimes we can't fully initialize child class
+
+```javascript
+var ChildClass = (function(__super) {
+  extendClass(ChildClass, __super); // extending at the very beginning
+
+  function ChildClass(param) {
+    // we call super class constructor on `this`
+    __super.call(this, "hello from child constructor");
+    console.log('In ChildClass constructor', param);
+  }
+  return ChildClass;
+})(BaseClass);
+
+// let's try to instantiate it
+new ChildClass('hello to child constructor');
+// output:
+// 'In BaseClass constructor', 'hello from child constructor'
+// 'In ChildClass constructor', 'hello to child constructor'
+
+```
+---
+layout: true
+#### Calling and overriding methods in child class
+---
+
+We saw how to call inherited methods from outside. Now, how it done inside
+
+```javascript
+var ChildClass = (function(__super) {
+  extendClass(ChildClass, __super); // extending at the very beginning
+
+  function ChildClass(param) {
+    __super.call(this);
+    // calling inherited method
+    this.myPublicInstanceMethod('hello'); // output: In BaseClass.myPublicInstanceMethod, hello
+  }
+
+  return ChildClass;
+})(BaseClass);
+```
+--
+
+Also very simple :)
+
+---
+
+Sometimes we need to override a function to enhance it or just to change it.
+
+```javascript
+var ChildClass = (function(__super) {
+  extendClass(ChildClass, __super); // extending at the very beginning
+
+  function ChildClass(param) {
+    __super.call(this);
+  }
+
+  ChildClass.prototype.myPublicInstanceMethod = function(param) {
+    console.log('In ChildClass.myPublicInstanceMethod', param);
+    __super.prototype.myPublicInstanceMethod.call(this, param);
+  }
+
+  return ChildClass;
+})(BaseClass);
+
+var child = new ChildClass();
+child.myPublicInstanceMethod('Hello');
+// output:
+// 'In ChildClass.myPublicInstanceMethod', 'Hello'
+// 'In BaseClass.myPublicInstanceMethod', 'Hello'
+
+```
+
+---
+layout: false
+### Notes on using inheritance
+
+
