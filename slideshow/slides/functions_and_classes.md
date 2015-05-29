@@ -596,6 +596,8 @@ var BaseClass = (function() {
     console.log('In BaseClass constructor', param);
   }
 
+  BaseClass.staticMember = 'BaseClass constant'; // static var
+
   BaseClass.prototype.myPublicInstanceMethod = function(param) {
     console.log('In BaseClass.myPublicInstanceMethod', param);
   };
@@ -634,19 +636,21 @@ var ChildClass = (function(__super) {
   function ChildClass(param) {
     console.log('In ChildClass constructor', param);
   }
-
   return ChildClass;
-
 })(BaseClass);
 
 function extendClass(targetClass, sourceClass) {
-  // we need an empty function that doesn't take any params
-  function Empty() {}
-  // we share same prototype
-  Empty.prototype = sourceClass.prototype;
+  function Empty() {} // empty function without any params
+  Empty.prototype = sourceClass.prototype; // we share same prototype
   // while `Empty` now has same prototype as sourceClass
   // we set it to be a `targetClass` `prototype`
   targetClass.prototype = new Empty();
+  // copying public static members of source class
+  for (var staticMemberName in sourceClass) {
+    sourceClass.hasOwnProperty(staticMemberName) {
+      targetClass[staticMemberName] = sourceClass[staticMemberName];
+    }
+  }
   // set back to own constructor that was overridden previously
   targetClass.prototype.constructor = targetClass;
 }
@@ -768,5 +772,50 @@ child.myPublicInstanceMethod('Hello');
 ---
 layout: false
 ### Notes on using inheritance
+
+- **When to use inheritance?**
+
+  Then when you feel that you're repeating your code just because you want some slight modifications. it is also very good when you want to create some abstract structures.
+--
+
+- **When should not use it?**
+
+  Then when you just want to look cool because you know how to do it. Inheritance can bring in lots of mess into code especially when there are lots of overriding. Always prefer *composition* over inheritance.
+--
+
+- **Can I access *private* *static* members of super class from child class?**
+
+  No, you can't.
+--
+
+- **How do I access public static members of super class?**
+
+  `__super.staticMember` or `BaseClass.staticMember`.
+---
+
+- **Can my child class inherit static members?**
+
+  Yes, it is inheriting but have in mind that inherited variables with primitive values are copied by value to child class, so changes in child class static var is not reflected in super class and vise versa.
+
+  Example:
+  ```javascript
+  BaseClass.staticMember = 'one';
+  // extending ...
+  console.log(ChildClass.staticMember); // 'one'
+  ChildClass.staticMember = 'two';
+  console.log(BaseClass.staticMember); // 'one' <- value in super class not changed
+  ```
+
+---
+
+## Design patterns
+
+---
+
+### What are design patterns?
+
+In the history of programming developers most of the time encounter very similar or same programming problems (that's why StackOverflow is useful) and to the most of problems there were created solutions.
+
+In OOP those solutions are called *design patterns* and were adopted to the most object oriented languages.
 
 
