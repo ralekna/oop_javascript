@@ -6,9 +6,7 @@ define(function () {
       this.doSomething();
     }
 
-    BaseClass.prototype = {
-      doSomething: function () {
-      }
+    BaseClass.prototype.doSomething = function () {
     };
 
     return BaseClass;

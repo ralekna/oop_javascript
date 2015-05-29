@@ -563,4 +563,87 @@ layout: true
   Nothing, ideally. It may set constructor arguments to instance variables but it should be optional. Constructor minimalism is a requirement for TDD.
 
 ---
+layout: true
 ### Extending classes
+---
+
+Class extension is important feature of object oriented languages that helps to group some classes and share functionality.
+
+--
+
+Let's create a base class that we will extend later.
+
+```javascript
+var BaseClass = (function() {
+
+  function BaseClass(param) {
+    console.log('In BaseClass constructor', param);
+  }
+
+  BaseClass.prototype.myPublicInstanceMethod = function(param) {
+    console.log('In BaseClass.myPublicInstanceMethod', param);
+  };
+
+  return BaseClass;
+
+})();
+```
+
+---
+
+And now we start creating a sub class.
+
+```javascript
+var ChildClass = (function(__super) { // `__super` param if for passing super class
+
+  function ChildClass(param) {
+    console.log('In ChildClass constructor', param);
+  }
+
+  return ChildClass;
+
+})(BaseClass);  // Pass BaseClass definition as param `__super`.
+                // It will us to mimic a behavior of `super`
+                // in pure OOP languages.
+
+```
+---
+
+Extend it with few different techniques. The first one is to copy all properties from
+
+```javascript
+var ChildClass = (function(__super) {
+  extendClass(ChildClass, __super); // extending at the very beginning
+
+  function ChildClass(param) {
+    console.log('In ChildClass constructor', param);
+  }
+
+  return ChildClass;
+
+})(BaseClass);
+
+function extendClass(targetClass, sourceClass) {
+  // we need an empty function that doesn't take any params
+  function Empty() {}
+  // we share same prototype
+  Empty.prototype = sourceClass.prototype;
+  // while `Empty` now has same prototype as sourceClass
+  // we set it to be a `targetClass` `prototype`
+  targetClass.prototype = new Empty();
+  // set back to own constructor that was overridden previously
+  targetClass.prototype.constructor = targetClass;
+}
+
+```
+---
+
+If we test now we would see that ChildClass now has a type of ChildClass and BaseClass
+
+```javascript
+var child = new ChildClass();
+var base  = new BaseClass();
+
+console.log( child instanceof ChildClass, child instanceof BaseClass); // true, true
+console.log( base instanceof ChildClass, base instanceof BaseClass); // false, true
+```
