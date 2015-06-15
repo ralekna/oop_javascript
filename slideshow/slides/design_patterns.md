@@ -8,3 +8,7 @@ In the history of programming developers most of the time encounter very similar
 
 In OOP those solutions are called *design patterns* and were adopted to the most object oriented languages.
 
+## Simple general rules
+
+### Don't repeat yourself (DRY)
+
