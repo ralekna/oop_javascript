@@ -647,7 +647,7 @@ function extendClass(targetClass, sourceClass) {
   targetClass.prototype = new Empty();
   // copying public static members of source class
   for (var staticMemberName in sourceClass) {
-    sourceClass.hasOwnProperty(staticMemberName) {
+    if (sourceClass.hasOwnProperty(staticMemberName)) {
       targetClass[staticMemberName] = sourceClass[staticMemberName];
     }
   }
